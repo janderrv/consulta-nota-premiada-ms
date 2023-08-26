@@ -2,20 +2,21 @@
 	"name": "consulta-nota-premiada-ms",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
-	"type": "module",
+	"main": "src/server.js",
 	"scripts": {
-		"dev:server": "nodemon --watch src --exec sucrase-node src/server.ts",
+		"dev": "nodemon --watch src --exec sucrase-node src/server.ts",
 		"build": "sucrase ./src -d ./dist --transforms typescript,imports",
 		"start": "node dist/server.js",
 		"prepare": "husky install",
-		"commitlint": "commitlint --edit"
+		"commitlint": "commitlint --edit",
+		"lint": "prettier --write . "
 	},
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
 		"@commitlint/cli": "^17.7.1",
 		"@commitlint/config-conventional": "^17.7.0",
+		"@types/puppeteer": "^7.0.4",
 		"@typescript-eslint/eslint-plugin": "^6.4.1",
 		"@typescript-eslint/parser": "^6.4.1",
 		"eslint": "^8.48.0",
@@ -29,5 +30,9 @@
 	},
 	"lint-staged": {
 		"**/*": "prettier --write --ignore-unknown"
+	},
+	"dependencies": {
+		"dotenv": "^16.3.1",
+		"puppeteer": "^21.1.0"
 	}
 }
