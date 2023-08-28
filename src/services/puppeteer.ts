@@ -77,14 +77,13 @@ export class PuppeteerService implements IPuppeteerService {
 
 	public async printElementScreen(
 		selector: string,
-		path: string,
-	): Promise<void> {
+	): Promise<string | Buffer> {
 		const element = await this.page.$(selector);
 		if (element) {
-			await element.screenshot({
-				path,
-			});
+			return element.screenshot();
 		}
+
+		throw new Error(`Element ${selector} not found`);
 	}
 
 	public async type(selector: string, text: string): Promise<void> {

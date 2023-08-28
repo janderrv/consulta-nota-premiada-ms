@@ -1,5 +1,6 @@
 import config from '../config';
 import { PuppeteerService } from '../services/puppeteer';
+import { RabbitMQService } from '../services/rabbitmq';
 
 export class AppController {
 	static execute = async () => {
@@ -27,15 +28,25 @@ export class AppController {
 			await puppeteerService.waitForDisappear(analyzeCpfButton);
 			await puppeteerService.waitForAppear(sadFace);
 
-			await puppeteerService.printElementScreen(
-				modal,
-				'notams-premiada.png',
-			);
+			const file = await puppeteerService.printElementScreen(modal);
 
 			await puppeteerService.closeBrowser();
-			console.log('Done!');
+
+			await AppController.sendToRabbitMQ(file);
 		} catch (error) {
 			console.error(error);
 		}
 	};
+
+	static async sendToRabbitMQ(file: string | Buffer) {
+		const rabbitMQService = new RabbitMQService();
+
+		await rabbitMQService.connect(config.RABBITMQ_URL);
+		await rabbitMQService.sendToQueue(config.TELEGRAM_QUEUE, {
+			image: file,
+		});
+		await rabbitMQService.close();
+
+		console.info('Message sent to RabbitMQ');
+	}
 }
