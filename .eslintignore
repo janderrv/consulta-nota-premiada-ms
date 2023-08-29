@@ -1,0 +1,15 @@
+.env
+dist
+node_modules
+.gitignore
+.git
+.prettierignore
+.prettierrc
+package.json
+package-lock.json
+.eslintrc.json
+README.md
+lintstagedrc.json
+Dockerfile
+docker-compose.yml
+.dockerignore
