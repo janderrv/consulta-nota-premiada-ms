@@ -1,0 +1,59 @@
+version: '3'
+services:
+    consulta-nota-premiada:
+        image: consulta-nota-premiada:latest
+        container_name: consulta-nota-premiada
+        restart: always
+        depends_on:
+            - rabbitmq
+        environment:
+            - API_NOTAMS_PREMIADA=https://www.notamspremiada.ms.gov.br
+            - RABBITMQ_URL=amqp://localhost
+            - TELEGRAM_QUEUE=telegram
+        deploy:
+            replicas: 1
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 512M
+                reservations:
+                    cpus: '0.25'
+                    memory: 256M
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 3
+                window: 120s
+            update_config:
+                parallelism: 1
+                delay: 10s
+                order: start-first
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: rabbitmq
+        restart: always
+        ports:
+            - 5672:5672
+            - 15672:15672
+        environment:
+            - RABBITMQ_DEFAULT_USER=guest
+            - RABBITMQ_DEFAULT_PASS=guest
+        deploy:
+            replicas: 1
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 512M
+                reservations:
+                    cpus: '0.25'
+                    memory: 256M
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 3
+                window: 120s
+            update_config:
+                parallelism: 1
+                delay: 10s
+                order: start-first

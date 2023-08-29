@@ -7,8 +7,7 @@ export class AppController {
 		const checkWinnerButton =
 			'#home > div.home__container > div > div.col.s12.l8.margin-top-15 > div:nth-child(1) > div.col.s12.l5 > button';
 		const inputCpf = '#cpf';
-		const analyzeCpfButton =
-			'#modal > div > div > div > div > span > form > div:nth-child(2) > div > button';
+
 		const modal = '#modal > div > div > div > div:nth-child(1)';
 		const sadFace =
 			'#modal > div > div > div > div:nth-child(1) > div > img';
@@ -23,9 +22,8 @@ export class AppController {
 
 			await puppeteerService.findAndClick(checkWinnerButton);
 			await puppeteerService.findAndType(inputCpf, '00000000000');
-			await puppeteerService.findAndClick(analyzeCpfButton);
+			await puppeteerService.pressEnter();
 
-			await puppeteerService.waitForDisappear(analyzeCpfButton);
 			await puppeteerService.waitForAppear(sadFace);
 
 			const file = await puppeteerService.printElementScreen(modal);

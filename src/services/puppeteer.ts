@@ -89,4 +89,8 @@ export class PuppeteerService implements IPuppeteerService {
 	public async type(selector: string, text: string): Promise<void> {
 		await this.page.type(selector, text);
 	}
+
+	public async pressEnter(): Promise<void> {
+		await this.page.keyboard.press('Enter');
+	}
 }

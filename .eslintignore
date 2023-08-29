@@ -10,3 +10,6 @@ package-lock.json
 .eslintrc.json
 README.md
 lintstagedrc.json
+Dockerfile
+docker-compose.yml
+.dockerignore
