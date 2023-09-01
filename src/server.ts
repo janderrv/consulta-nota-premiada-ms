@@ -1,15 +1,19 @@
+import { schedule } from 'node-cron';
+import config from './config';
 import AppController from './controllers/app';
 import MongoDB from './database/mongodb';
 import * as dotenv from 'dotenv';
 
 dotenv.config({ path: __dirname + '/../.env' });
 
-MongoDB.connect()
-	.then(() => {
-		AppController.execute().then(() => {
-			MongoDB.disconnect();
+schedule(config.CRON_SCHEDULE, () => {
+	MongoDB.connect()
+		.then(() => {
+			AppController.execute().then(() => {
+				MongoDB.disconnect();
+			});
+		})
+		.catch((error) => {
+			console.error(error);
 		});
-	})
-	.catch((error) => {
-		console.error(error);
-	});
+});
