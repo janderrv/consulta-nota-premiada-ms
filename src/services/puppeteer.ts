@@ -4,7 +4,7 @@ export interface IPuppeteerService {
 	browser: Browser;
 }
 
-export class PuppeteerService implements IPuppeteerService {
+export default class PuppeteerService implements IPuppeteerService {
 	public browser: Browser;
 	public page: Page;
 
