@@ -6,7 +6,7 @@ interface IRabbitMQ {
 	close(): Promise<void>;
 }
 
-export class RabbitMQService implements IRabbitMQ {
+export default class RabbitMQService implements IRabbitMQ {
 	private connection: Connection;
 	private channel: Channel;
 

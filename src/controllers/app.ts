@@ -1,8 +1,9 @@
 import config from '../config';
-import { PuppeteerService } from '../services/puppeteer';
-import { RabbitMQService } from '../services/rabbitmq';
+import PuppeteerService from '../services/puppeteer';
+import RabbitMQService from '../services/rabbitmq';
+import ClientService from '../services/client';
 
-export class AppController {
+export default class AppController {
 	static execute = async () => {
 		const checkWinnerButton =
 			'#home > div.home__container > div > div.col.s12.l8.margin-top-15 > div:nth-child(1) > div.col.s12.l5 > button';
@@ -13,24 +14,31 @@ export class AppController {
 			'#modal > div > div > div > div:nth-child(1) > div > img';
 
 		try {
-			const puppeteerService = new PuppeteerService();
+			const clients = await ClientService.getTodayClients();
+			if (clients?.length) {
+				const puppeteerService = new PuppeteerService();
+				await puppeteerService.init();
+				await puppeteerService.createPage();
 
-			await puppeteerService.init();
-			await puppeteerService.createPage();
+				for (const client of clients) {
+					await puppeteerService.goTo(config.API_NOTAMS_PREMIADA);
+					await puppeteerService.findAndClick(checkWinnerButton);
+					await puppeteerService.findAndType(inputCpf, client.cpf);
+					await puppeteerService.pressEnter();
+					await puppeteerService.waitForAppear(sadFace);
+					const file =
+						await puppeteerService.printElementScreen(modal);
+					await AppController.sendToRabbitMQ(file);
+				}
 
-			await puppeteerService.goTo(config.API_NOTAMS_PREMIADA);
+				await puppeteerService.closeBrowser();
 
-			await puppeteerService.findAndClick(checkWinnerButton);
-			await puppeteerService.findAndType(inputCpf, '00000000000');
-			await puppeteerService.pressEnter();
+				const updateClients = clients.map((client) =>
+					ClientService.updateNextConsult(client._id),
+				);
 
-			await puppeteerService.waitForAppear(sadFace);
-
-			const file = await puppeteerService.printElementScreen(modal);
-
-			await puppeteerService.closeBrowser();
-
-			await AppController.sendToRabbitMQ(file);
+				await Promise.all(updateClients);
+			}
 		} catch (error) {
 			console.error(error);
 		}
