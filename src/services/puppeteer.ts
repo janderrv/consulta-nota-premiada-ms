@@ -1,4 +1,5 @@
 import { Browser, Page, launch } from 'puppeteer';
+import config from '../config';
 
 export interface IPuppeteerService {
 	browser: Browser;
@@ -42,7 +43,9 @@ export default class PuppeteerService implements IPuppeteerService {
 	}
 
 	public async find(selector: string): Promise<void> {
-		await this.page.waitForSelector(selector);
+		await this.page.waitForSelector(selector, {
+			timeout: config.PUPPETEER_TIMEOUT,
+		});
 	}
 
 	public async findAndClick(selector: string): Promise<void> {
@@ -59,6 +62,7 @@ export default class PuppeteerService implements IPuppeteerService {
 		await this.page.waitForSelector(selector, {
 			hidden: true,
 			visible: false,
+			timeout: config.PUPPETEER_TIMEOUT,
 		});
 	}
 
@@ -66,6 +70,7 @@ export default class PuppeteerService implements IPuppeteerService {
 		await this.page.waitForSelector(selector, {
 			visible: true,
 			hidden: false,
+			timeout: config.PUPPETEER_TIMEOUT,
 		});
 	}
 

@@ -8,6 +8,8 @@ interface ENV {
 	RABBITMQ_URL: string | undefined;
 	TELEGRAM_QUEUE: string | undefined;
 	MONGODB_URL: string | undefined;
+	PUPPETEER_TIMEOUT: number | undefined;
+	CRON_SCHEDULE: string | undefined;
 }
 
 interface Config {
@@ -15,6 +17,8 @@ interface Config {
 	RABBITMQ_URL: string;
 	TELEGRAM_QUEUE: string;
 	MONGODB_URL: string;
+	PUPPETEER_TIMEOUT: number;
+	CRON_SCHEDULE: string;
 }
 
 const getConfig = (): ENV => {
@@ -23,6 +27,8 @@ const getConfig = (): ENV => {
 		RABBITMQ_URL: process.env.RABBITMQ_URL,
 		TELEGRAM_QUEUE: process.env.TELEGRAM_QUEUE,
 		MONGODB_URL: process.env.MONGODB_URL,
+		PUPPETEER_TIMEOUT: Number(process.env.PUPPETEER_TIMEOUT),
+		CRON_SCHEDULE: process.env.CRON_SCHEDULE,
 	};
 };
 
